@@ -1,3 +1,52 @@
+/*
+    Z80-MBC2_VGA32 - Main Sketch File
+
+    This sketch enables the TTGO ESP VGA32 board to emulate a 
+    Z80-MBC2 mini-board computer, using disk image files on 
+    the SD card, using a PS/2 keyboard and a VGA monitor as
+    peripherals.
+
+    To build this sketch, the following items are needed:
+    - Espressif ESP-32 hardware support tools and libraries for
+      the Arduino IDE, either integrated using the "Additional
+      Boards Manager URL":
+      <https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json>
+      or by cloning the GitHub repo or downloading the ZIP from
+      <https://github.com/espressif/arduino-esp32> (be sure to 
+      select the release branch "release/v1.0";
+    - FabGL library from Fabrizio Di Vittorio from GitHub:
+      <https://github.com/fdivitto/FabGL.git> or my fork, which
+      also contains support for the Belgian keyboard layout:
+      <https://github.com/GmEsoft/FabGL.git>.
+
+    In Arduino IDE, in Tools - Board:, select the "ESP32 Dev Module"
+    board. In the configuration settings, select the following:
+    - Partition Scheme: "Minimal SPIFFS (1.9MB APP with OTA/190KB SPIFFS)";
+    - PSRAM: "Disabled".
+   
+
+    Created by Michel Bernard (michel_bernard@hotmail.com) 
+    - <http://www.github.com/GmEsoft/Z80-MBC2_VGA32>
+    Copyright (c) 2021 Michel Bernard.
+    All rights reserved.
+    
+    This file is part of Z80-MBC2_VGA32.
+    
+    Z80-MBC2_VGA32 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
 // Configuration settings
 #include "TermCfg.h"
 
@@ -99,8 +148,8 @@ void setup()
 }
 
 
-/* Pi Spigot 500 performance:
- * ==========================
+/* Pi Spigot 500 performance test:
+ * ===============================
  * 
  * Config                   FabGL   MCORE   Resol   Input   1st Line    Full    MHz     Comment
  * ---------------------------------------------------------------------------------------------------------
