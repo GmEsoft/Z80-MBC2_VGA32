@@ -1,6 +1,35 @@
+/*
+    Z80-MBC2_VGA32 - File_I implementation for FabFL File System.
+    
+
+    Created by Michel Bernard (michel_bernard@hotmail.com) 
+    - <http://www.github.com/GmEsoft/Z80-MBC2_VGA32>
+    Copyright (c) 2021 Michel Bernard.
+    All rights reserved.
+    
+
+    This file is part of Z80-MBC2_VGA32.
+    
+    Z80-MBC2_VGA32 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
 #include "File_FabGL.h"
 
 #include "HardwareSerial.h"
+
+#include "log.h"
 
 #include <cstdarg>
 
@@ -14,8 +43,8 @@ File_FabGL::File_FabGL( FILE *file ) :
     if ( !file_ )
     {
         strerror_ = ERROR_NOTOPEN;
+        LOGE( "File not open" );
     }
-    Serial.println( strerror_ );
 }
 
 File_FabGL::~File_FabGL(void)
@@ -31,6 +60,7 @@ int File_FabGL::close()
         file_ = 0;
         return 0;
     }
+    LOGE( "failed" );
     return -1;
 }
 
@@ -77,24 +107,36 @@ int File_FabGL::scanf( const char *format, ... )
     return ret;
 */
     strerror_ = ERROR_INVALID;
+    LOGE( "not implemented" );
     return -1;
 }
 
 int File_FabGL::printf( const char *format, ... )
 {
     strerror_ = ERROR_INVALID;
+    LOGE( "not implemented" );
     return -1;
 }
 
 char* File_FabGL::gets( char *buffer, int len )
 {
-    strerror_ = ERROR_INVALID;
-    return NULL;
+    int i;
+    for ( i=0; i<len-1 && !eof(); ++i ) {
+        char c = getc();
+        if ( c == '\0' || c == '\r' || c == '\n' ) {
+            buffer[i] = 0;
+            break;
+        }
+        buffer[i] = c;
+    }
+    buffer[i] = 0;
+    return buffer;
 }
 
 int File_FabGL::puts( const char *str )
 {
     strerror_ = ERROR_INVALID;
+    LOGE( "not implemented" );
     return -1;
 }
 
