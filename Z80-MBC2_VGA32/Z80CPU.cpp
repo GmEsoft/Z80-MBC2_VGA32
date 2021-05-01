@@ -1,3 +1,30 @@
+/*
+    Z80-MBC2_VGA32 - Z-80 CPU Emulator
+    
+
+    Created by Michel Bernard (michel_bernard@hotmail.com) 
+    - <http://www.github.com/GmEsoft/Z80-MBC2_VGA32>
+    Copyright (c) 2021 Michel Bernard.
+    All rights reserved.
+    
+
+    This file is part of Z80-MBC2_VGA32.
+    
+    Z80-MBC2_VGA32 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    Foobar is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License
+    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+
+*/
+
 #include "log.h"
 #include "Z80CPU.h"
 
@@ -10,13 +37,6 @@
 #define simStop(msg)
 
 #pragma GCC optimize("03")
-
-#if defined( ESP_PLATFORM ) // ESP32 WROVER KIT (ESP32 Dev Module)
-//#include "esp_attr.h"
-#define IRAM //IRAM_ATTR
-#else
-#define IRAM
-#endif
 
 //  Enumerated constants for instructions, also array subscripts
 enum
@@ -280,15 +300,6 @@ void Z80CPU::init()
 // CPU Reset
 void Z80CPU::reset()
 {
-#if 1
-    LOGD( "======== Resetting Z80 ========" );
-    regs.x.af = 0xFFFF;
-    LOGD( "AF=%04X A=%02X F=%02X", regs.x.af, regs.h.a, regs.h.f );
-    flags->z = flags->c = 0;
-    LOGD( "AF=%04X A=%02X F=%02X", regs.x.af, regs.h.a, regs.h.f );
-    regs.x.af = 0xABCD;
-    LOGD( "AF=%04X A=%02X", *Z80x[simAF], *Z80h[simA] );
-#endif
 	pc_ = 0;
 	regs.x.sp = 0xFFFF;
 	selectHL();
@@ -324,7 +335,7 @@ char Z80CPU::getNMI( void )
 }
 
 // Get Parity of ACC (1=even, 0=odd)
-static uchar IRAM parity(uchar res)
+static uchar parity(uchar res)
 {
 	res ^= res >> 4;
 	res ^= res >> 2;
@@ -335,7 +346,7 @@ static uchar IRAM parity(uchar res)
 
 
 // Instruction Results
-__inline uchar IRAM Z80CPU::resINC_byte (uchar res)
+__inline uchar Z80CPU::resINC_byte (uchar res)
 {
 	regs.h.f &= B_00000001;
     regs.h.f |= res & B_10101000;
@@ -348,7 +359,7 @@ __inline uchar IRAM Z80CPU::resINC_byte (uchar res)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resDEC_byte (uchar res)
+__inline uchar Z80CPU::resDEC_byte (uchar res)
 {
 	regs.h.f &= B_00000001;
     regs.h.f |= res & B_10101000;
@@ -362,7 +373,7 @@ __inline uchar IRAM Z80CPU::resDEC_byte (uchar res)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resOR_byte (uchar res)
+__inline uchar Z80CPU::resOR_byte (uchar res)
 {
     regs.h.f = res & B_10101000;
 	if ( parity( res ) )
@@ -372,7 +383,7 @@ __inline uchar IRAM Z80CPU::resOR_byte (uchar res)
 	return res;
 }
 
-__inline uchar IRAM Z80CPU::resAND_byte (uchar res)
+__inline uchar Z80CPU::resAND_byte (uchar res)
 {
     regs.h.f = ( res & B_10101000 ) | HF;
 	if ( parity( res ) )
@@ -389,7 +400,7 @@ __inline uchar IRAM Z80CPU::resAND_byte (uchar res)
 0		000		10		11		00		01
 1		001		01(V)	10		11(C)	00
 */
-__inline uchar IRAM Z80CPU::resSUB_byte (schar res, ushort c)
+__inline uchar Z80CPU::resSUB_byte (schar res, ushort c)
 {
 	uchar v = c >> ( 7 - PPOS);
 	v ^= v >> 1;
@@ -413,7 +424,7 @@ __inline uchar IRAM Z80CPU::resSUB_byte (schar res, ushort c)
 0		00		10		11		00		01
 1		01		11		00(C)	01		10
 */
-__inline uchar IRAM Z80CPU::resADD_byte (schar res, ushort c)
+__inline uchar Z80CPU::resADD_byte (schar res, ushort c)
 {
 	uchar v = c >> ( 7 - PPOS);
 	v ^= v >> 1;
@@ -429,7 +440,7 @@ __inline uchar IRAM Z80CPU::resADD_byte (schar res, ushort c)
 	return res;
 }
 
-__inline uchar IRAM Z80CPU::resROT_byte (uchar res, uchar c)
+__inline uchar Z80CPU::resROT_byte (uchar res, uchar c)
 {
     regs.h.f = res & B_10101000;
 	regs.h.f |= c & CF;
@@ -440,7 +451,7 @@ __inline uchar IRAM Z80CPU::resROT_byte (uchar res, uchar c)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resROTA (uchar res, uchar c)
+__inline uchar Z80CPU::resROTA (uchar res, uchar c)
 {
 	regs.h.f &= B_11000100;
     regs.h.f |= res & B_00101000
@@ -448,7 +459,7 @@ __inline uchar IRAM Z80CPU::resROTA (uchar res, uchar c)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resLDI (uchar res, uint bc)
+__inline uchar Z80CPU::resLDI (uchar res, uint bc)
 {
 	ushort x = res + regs.h.a;
 	regs.h.f &= B_11000001;
@@ -461,7 +472,7 @@ __inline uchar IRAM Z80CPU::resLDI (uchar res, uint bc)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resCPI (uchar res, uint bc, uchar h)
+__inline uchar Z80CPU::resCPI (uchar res, uint bc, uchar h)
 {
 	ushort x = res - h;
 	regs.h.f &= B_00000001;
@@ -480,7 +491,7 @@ __inline uchar IRAM Z80CPU::resCPI (uchar res, uint bc, uchar h)
     return res;
 }
 
-__inline uchar IRAM Z80CPU::resROTD_byte (uchar res)
+__inline uchar Z80CPU::resROTD_byte (uchar res)
 {
 	regs.h.f &= B_00000001;
 	regs.h.f |= res & B_10101000;
@@ -491,7 +502,7 @@ __inline uchar IRAM Z80CPU::resROTD_byte (uchar res)
     return res;
 }
 
-void IRAM Z80CPU::incR()
+void Z80CPU::incR()
 {
 	ushort x = regs.h.r & 0x80;
 	++regs.h.r;
@@ -500,7 +511,7 @@ void IRAM Z80CPU::incR()
 }
 
 // Init internal pointers for HL
-void IRAM Z80CPU::selectHL()
+void Z80CPU::selectHL()
 {
 	useix = useiy = useixiy = 0;
 	Z80h[simH] = &regs.h.h;
@@ -509,7 +520,7 @@ void IRAM Z80CPU::selectHL()
 }
 
 // Init internal pointers for IX
-void IRAM Z80CPU::selectIX()
+void Z80CPU::selectIX()
 {
 	useix = useixiy = 1;
 	Z80h[simH] = &regs.h.ixh;
@@ -518,7 +529,7 @@ void IRAM Z80CPU::selectIX()
 }
 
 // Init internal pointers for IY
-void IRAM Z80CPU::selectIY()
+void Z80CPU::selectIY()
 {
 	useiy = useixiy = 1;
 	Z80h[simH] = &regs.h.iyh;
@@ -529,7 +540,7 @@ void IRAM Z80CPU::selectIY()
 
 
 // Execute 1 Statement
-void IRAM Z80CPU::sim()
+void Z80CPU::sim()
 {
 	// interrupts
 	if ( nmi )
@@ -585,7 +596,7 @@ void IRAM Z80CPU::sim()
 	tstates = 0;
 }
 
-void IRAM Z80CPU::simop( const Instr &instr )
+void Z80CPU::simop( const Instr &instr )
 {
 	switch ( instr.op )
 	{
