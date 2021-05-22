@@ -2,28 +2,28 @@
     Z80-MBC2_VGA32 - Raster Display Driver
     for TRS-80 Model 4 16x64 or 24x80 text modes
     with support for enhanced color modes.
-      
 
-    Created by Michel Bernard (michel_bernard@hotmail.com) 
+
+    Created by Michel Bernard (michel_bernard@hotmail.com)
     - <http://www.github.com/GmEsoft/Z80-MBC2_VGA32>
     Copyright (c) 2021 Michel Bernard.
     All rights reserved.
-    
+
 
     This file is part of Z80-MBC2_VGA32.
-    
+
     Z80-MBC2_VGA32 is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-    
-    Foobar is distributed in the hope that it will be useful,
+
+    Z80-MBC2_VGA32 is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-    
+
     You should have received a copy of the GNU General Public License
-    along with Foobar.  If not, see <https://www.gnu.org/licenses/>.
+    along with Z80-MBC2_VGA32.  If not, see <https://www.gnu.org/licenses/>.
 
 */
 
@@ -47,12 +47,12 @@ void AppDisplay::setup()
 
     // Instantiate sound generator (BEL)
     Terminal.soundGenerator();
-    
+
     if ( nResolution )
     {
         LOGD( "Loading VGA Controller" );
-        fabgl::BaseDisplayController *displayController 
-            = nResolution > 7 ? (fabgl::BaseDisplayController *)new fabgl::VGA4Controller 
+        fabgl::BaseDisplayController *displayController
+            = nResolution > 7 ? (fabgl::BaseDisplayController *)new fabgl::VGA4Controller
             : nResolution > 6 ? (fabgl::BaseDisplayController *)new fabgl::VGA8Controller
             : (fabgl::BaseDisplayController *)new fabgl::VGA16Controller;
         displayController->begin();
@@ -70,17 +70,17 @@ void AppDisplay::setup()
 
     LOGD( "Terminal.connectLocally()" );
     Terminal.connectLocally();      // to use Terminal.read(), available(), etc..
-    
+
     LOGD( "Terminal.setBackgroundColor()" );
     Terminal.setBackgroundColor(Color::Black);
     LOGD( "Terminal.setForegroundColor()" );
     Terminal.setForegroundColor(Color::BrightGreen);
     LOGD( "Terminal.clear()" );
     Terminal.clear();
-    
+
     LOGD( "Terminal.enableCursor()" );
     Terminal.enableCursor(true);
-    
+
 }
 
 bool AppDisplay::configure()
@@ -98,7 +98,7 @@ bool AppDisplay::configure()
         AppStream.println();
     }
     AppStream.print("==> ");
-    while ( AppStream.available() ) 
+    while ( AppStream.available() )
       AppStream.read();
     int c;
     while ( !isalnum( c = AppStream.read() ) );
@@ -154,5 +154,5 @@ int AppDisplay::getDisplayMode()
 
 void AppDisplay::setDisplayMode( int n )
 {
-    
+
 }
