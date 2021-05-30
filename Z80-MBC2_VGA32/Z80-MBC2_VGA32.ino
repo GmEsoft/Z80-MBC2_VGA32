@@ -13,7 +13,7 @@
       <https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json>
       or by cloning the GitHub repo or downloading the ZIP from
       <https://github.com/espressif/arduino-esp32> (be sure to 
-      select the release branch "release/v1.0";
+      select the release branch "release/v1.0");
     - FabGL library from Fabrizio Di Vittorio from GitHub:
       <https://github.com/fdivitto/FabGL.git> or my fork, which
       also contains support for the Belgian keyboard layout:
