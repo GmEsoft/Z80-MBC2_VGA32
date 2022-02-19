@@ -31,7 +31,7 @@
 #include "System_I.h"
 #include "SystemConsole.h"
 #include "SystemClock.h"
-#include "Ram32.h"
+#include "RAM32.h"
 #include "Z80CPU.h"
 #include "Z80Disassembler.h"
 
